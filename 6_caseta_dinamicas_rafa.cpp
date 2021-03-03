@@ -29,10 +29,10 @@ using namespace std;
 #define SUBIDA_MAYOR 1.02
 
 typedef struct {
-    int codigo{};
+    int codigo;
     char nombre[CAR];
-    int antig{};
-    double cuota{};
+    int antig;
+    float cuota;
 } Caseta;
 
 typedef struct nodo {
@@ -92,13 +92,11 @@ void pedir_nombre(char *nombre) {
 void pedir_antiguedad(int *antig) {
     std::cout << "Introduzca la antiguedad: ";
     std::cin >> *antig;
-
 }
 
-void pedir_cuota(double *cuota) {
+void pedir_cuota(float *cuota) {
     std::cout << "Introduzca la cuota: ";
     std::cin >> *cuota;
-
 }
 
 void insertar_fichero_en_lista(nodoSocio **lista, nodoSocio *nuevo) {
@@ -182,7 +180,8 @@ void actualizar_cuota_socio(nodoSocio *lista) {
 void leer_lista(nodoSocio *lista) {
     nodoSocio *aux = lista;
     while (aux != NULL) {
-        printf("\nSocio : %d de nombre: %s con una antiguedad de %d y una cuota de %f.\n", aux->datosSocio.codigo, aux->datosSocio.nombre, aux->datosSocio.antig, aux->datosSocio.cuota);
+        printf("\nSocio : %d de nombre: %s con una antiguedad de %d y una cuota de %f.\n", aux->datosSocio.codigo,
+               aux->datosSocio.nombre, aux->datosSocio.antig, aux->datosSocio.cuota);
         aux = aux->sig;
     }
 }

@@ -1,26 +1,26 @@
 /*
 En una caseta de feria, se dispone de un fichero con los datos de los socios. Son estos:
-
+ 
 -                  Codigo de socio (del 1 en adelante).
 -                  Nombre del socio (de 30 caracteres).
 -                  Antiguedad en la caseta (anios).
 -                  Cuota a pagar (en euros).
-
+ 
 Este fichero esta ordenado por codigo de socio, de forma que el codigo de socio coincide con la posicion del registro dentro del fichero.
-
+ 
 Realizar un programa que lea codigos de socio por teclado y actualice la cuota a pagar de acuerdo con esta regla:
-
+ 
 -                  Antiguedad 0-5 anios: subida 4%.
 -                  Antiguedad 6-10 anios: subida 3%.
 -                  Antiguedad mayor a 10 anios: subida 2%.
-
+ 
 Se terminara el proceso cuando se introduzca el codigo de socio 0.
 
 */
 
 
 #include <stdio.h>
-#include <stdlib.h>
+#include<stdlib.h>
 #include <string.h>
 
 #define CAR 30
