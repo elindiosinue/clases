@@ -3,14 +3,15 @@ Examen subgrupo 2 (Tema 4)
 */
 
 #include <stdio.h>
-#include<stdlib.h>
-#include<time.h>
+#include <stdlib.h>
+#include <time.h>
 #include <string.h>
 #include <ctype.h>
 
 #define CAR 30
 #define NIF 10
 #define NOM 40
+
 
 typedef struct
 {
@@ -24,6 +25,7 @@ typedef struct
 {
     int codigo;
     char descrip[CAR];
+    float cuenta_vtas;		// aniado esta variable para la opcion 8.
 }articulo;
 
 typedef struct nodo_a
@@ -36,6 +38,7 @@ typedef struct
 {
     char nif[NIF];
     char nombre[NOM];
+    float cuenta_vtas;		// aniado esta variable para la opcion 9.
 }vendedor;
 
 typedef struct nodo_vd
@@ -157,6 +160,7 @@ void alta_articulos(nodoArticulo **lista_art)
 
     pedir_codigo (&(aux->datosArticulo.codigo));
     pedir_descripcion (aux->datosArticulo.descrip);
+    aux->datosArticulo.cuenta_vtas = 0;
 
     aux->sig = NULL;
 
@@ -192,7 +196,7 @@ void consulta_vendedores (nodoVendedor *lista_vend)
 
     while (lista_vend != NULL)
     {
-        printf ("%s - %s\n", lista_vend->datosVendedor.nif, lista_vend->datosVendedor.nombre);
+        printf ("%s - %s - %.2f \n", lista_vend->datosVendedor.nif, lista_vend->datosVendedor.nombre, lista_vend->datosVendedor.cuenta_vtas);
         lista_vend = lista_vend->sig;
     }
 }
@@ -244,6 +248,7 @@ void alta_vendedores (nodoVendedor **lista_vend)
 
     pedir_nif (aux->datosVendedor.nif);
     pedir_nombre (aux->datosVendedor.nombre);
+    aux->datosVendedor.cuenta_vtas = 0;
 
     aux->sig = NULL;
 
@@ -282,12 +287,11 @@ void pedir_fecha_venta (int *dia, int *mes, int *anio)
     scanf ("%d/%d/%d", dia, mes, anio);
     fflush (stdin);
     //}while (!comprobar_fecha(*dia, *mes, *anio));
-
 }
 
 void insertar_venta_en_lista (nodoVenta **lista_vent, nodoVenta *aux)
 {
-    if (*lista_vent == NULL)
+    if ((*lista_vent) == NULL)
         *lista_vent = aux;
     else
     {
@@ -296,7 +300,7 @@ void insertar_venta_en_lista (nodoVenta **lista_vent, nodoVenta *aux)
             (aux->datosVenta.fechaVenta.mes < (*lista_vent)->datosVenta.fechaVenta.mes) ||
             (aux->datosVenta.fechaVenta.anio == (*lista_vent)->datosVenta.fechaVenta.anio) &&
             (aux->datosVenta.fechaVenta.mes == (*lista_vent)->datosVenta.fechaVenta.mes) &&
-            (aux->datosVenta.fechaVenta.dia <= (*lista_vent)->datosVenta.fechaVenta.dia))
+            (aux->datosVenta.fechaVenta.dia < (*lista_vent)->datosVenta.fechaVenta.dia))
         {
             aux->sig = (*lista_vent);
             (*lista_vent) = aux;
@@ -305,9 +309,12 @@ void insertar_venta_en_lista (nodoVenta **lista_vent, nodoVenta *aux)
         {
             nodoVenta *busca = (*lista_vent);
 
-            while (busca->sig != NULL && (busca->sig->datosVenta.fechaVenta.anio <= aux->datosVenta.fechaVenta.anio) &&
-                   (aux->datosVenta.fechaVenta.mes <= (*lista_vent)->datosVenta.fechaVenta.mes) &&
-                   (aux->datosVenta.fechaVenta.dia < (*lista_vent)->datosVenta.fechaVenta.dia))
+            while ((busca->sig != NULL) && ((aux->datosVenta.fechaVenta.anio > (*lista_vent)->datosVenta.fechaVenta.anio) ||
+                                            (aux->datosVenta.fechaVenta.anio == (*lista_vent)->datosVenta.fechaVenta.anio) &&
+                                            (aux->datosVenta.fechaVenta.mes > (*lista_vent)->datosVenta.fechaVenta.mes) ||
+                                            (aux->datosVenta.fechaVenta.anio == (*lista_vent)->datosVenta.fechaVenta.anio) &&
+                                            (aux->datosVenta.fechaVenta.mes == (*lista_vent)->datosVenta.fechaVenta.mes) &&
+                                            (aux->datosVenta.fechaVenta.dia >= (*lista_vent)->datosVenta.fechaVenta.dia)))
                 busca = busca->sig;
 
             aux->sig = busca->sig;
@@ -317,42 +324,67 @@ void insertar_venta_en_lista (nodoVenta **lista_vent, nodoVenta *aux)
     printf ("\nVenta efectuada correctamente.\n");
 }
 
-void consulta_ventas_vendedor (nodoVenta *lista_vent)
+void consulta_ventas_vendedor (nodoVenta *lista_vent, nodoVendedor *lista_vend)
 {
-    /*char nif[NIF];
+    char nif[NIF];
 
     if (lista_vent == NULL)
     {
-        printf ("\nNo existen articulos para mostrar.\n");
+        printf ("\nNo existen ventas para mostrar.\n");
         return;
     }
 
     pedir_nif (nif);
-    printf ("\nLISTADO DE VENTAS POR VENDEDOR:\n-------------------------------\n");
 
-    while (lista_vent != NULL)
+    if (buscar_nif(lista_vend, nif))
     {
-        if (strcmp(nif, lista_vent->datosVenta.datosVendedor.nif) == 0)
-            printf ("%d/%d/%d - %d - %d\n", (&(lista_vent->datosVenta.fechaVenta.dia)), &(lista_vent->datosVenta.fechaVenta.mes),
-                    &(lista_vent->datosVenta.fechaVenta.anio), &(lista_vent->datosVenta.datosArticulo.codigo), &(lista_vent->datosVenta.uni_vend));
-            //lista_vent = lista_vent->sig;
+        printf ("\nLISTADO DE VENTAS POR VENDEDOR:\n-------------------------------\n");
 
-        lista_vent = lista_vent->sig;
-    }*/
-    if (lista_vent == NULL)
+        while (lista_vent != NULL)
+        {
+            if (strcmp(nif, lista_vent->datosVenta.datosVendedor.nif) == 0)
+                printf ("%d/%d/%d - %d - %d\n", lista_vent->datosVenta.fechaVenta.dia, lista_vent->datosVenta.fechaVenta.mes,
+                        lista_vent->datosVenta.fechaVenta.anio, lista_vent->datosVenta.datosArticulo.codigo, lista_vent->datosVenta.uni_vend);
+
+            lista_vent = lista_vent->sig;
+        }
+    }else
+        printf ("\nEl nif no es correcto.\n");
+
+}
+
+void incrementar_venta_vendedor (nodoVenta *aux, nodoVendedor **lista_vend)
+{
+    nodoVendedor *aux_vend = (*lista_vend);
+
+    while (aux_vend != NULL)
     {
-        printf ("\nNo existen articulos para mostrar.\n");
-        return;
+        if (strcmp (aux->datosVenta.datosVendedor.nif, aux_vend->datosVendedor.nif) == 0)
+        {
+            aux_vend->datosVendedor.cuenta_vtas = aux_vend->datosVendedor.cuenta_vtas +
+                                                  (aux->datosVenta.precio * aux->datosVenta.uni_vend);
+            printf ("\n%.2f\n", aux_vend->datosVendedor.cuenta_vtas);
+            return;	// ??
+        }
+        else
+            aux_vend = aux_vend->sig;
     }
+}
 
-    printf ("\nLISTADO DE VENTAS:\n--------------------\n");
+void incrementar_venta_articulo (nodoVenta *aux, nodoArticulo **lista_art)
+{
+    nodoArticulo *aux_art = (*lista_art);
 
-    while (lista_vent != NULL)
+    while (aux_art != NULL)
     {
-        printf ("%d/%d/%d - %d - %d\n", (&(lista_vent->datosVenta.fechaVenta.dia)), (&(lista_vent->datosVenta.fechaVenta.mes)),
-                (&(lista_vent->datosVenta.fechaVenta.anio)), (&(lista_vent->datosVenta.datosArticulo.codigo)), (&(lista_vent->datosVenta.uni_vend)));
-
-        lista_vent = lista_vent->sig;
+        if (aux->datosVenta.datosArticulo.codigo = aux_art->datosArticulo.codigo)
+        {
+            aux_art->datosArticulo.cuenta_vtas = aux_art->datosArticulo.cuenta_vtas +
+                                                 (aux->datosVenta.precio * aux->datosVenta.uni_vend);
+            return;	// ??
+        }
+        else
+            aux_art = aux_art->sig;
     }
 }
 
@@ -371,10 +403,16 @@ void alta_ventas (nodoVenta **lista_vent, nodoArticulo **lista_art, nodoVendedor
         aux = (nodoVenta*)malloc(sizeof(nodoVenta));
 
         strcpy(aux->datosVenta.datosVendedor.nif, aux_nif);
+        strcpy(aux->datosVenta.datosVendedor.nombre, (*lista_vend)->datosVendedor.nombre);
+
         pedir_fecha_venta (&(aux->datosVenta.fechaVenta.dia), &(aux->datosVenta.fechaVenta.mes), &(aux->datosVenta.fechaVenta.anio));
         aux->datosVenta.datosArticulo.codigo = cod;
+        strcpy(aux->datosVenta.datosArticulo.descrip, (*lista_art)->datosArticulo.descrip);
         pedir_unidades (&(aux->datosVenta.uni_vend));
         pedir_precio (&(aux->datosVenta.precio));
+
+        incrementar_venta_vendedor (aux, lista_vend);
+        incrementar_venta_articulo (aux, lista_art);
 
         aux->sig = NULL;
 
@@ -382,6 +420,87 @@ void alta_ventas (nodoVenta **lista_vent, nodoArticulo **lista_art, nodoVendedor
     }
     else
         printf ("\nNo existe algunos de los datos introducidos (dni del vendedor o codigo del articulo).\n");
+}
+
+void consulta_ventas_articulo (nodoVenta *lista_vent, nodoArticulo*lista_art)
+{
+    int cod;
+
+    if (lista_vent == NULL)
+    {
+        printf ("\nNo existen ventas para mostrar.\n");
+        return;
+    }
+
+    pedir_codigo (&cod);
+
+    if (buscar_cod (lista_art, cod))
+    {
+        printf ("\nLISTADO DE VENTAS POR ARTICULO:\n-------------------------------\n");
+
+        while (lista_vent != NULL)
+        {
+            if (cod == lista_vent->datosVenta.datosArticulo.codigo)
+                printf ("%d/%d/%d - %s - %d\n", lista_vent->datosVenta.fechaVenta.dia, lista_vent->datosVenta.fechaVenta.mes,
+                        lista_vent->datosVenta.fechaVenta.anio, lista_vent->datosVenta.datosVendedor.nombre, lista_vent->datosVenta.uni_vend);
+
+            lista_vent = lista_vent->sig;
+        }
+    }
+    else
+        printf ("\nEl codigo introducido no es correcto.\n");
+}
+
+void articulo_mas_vendido (nodoVenta *lista_vent, nodoArticulo *lista_art)
+{
+    if (lista_vent == NULL)
+    {
+        printf ("\nNo existen ventas para mostrar.\n");
+        return;
+    }
+
+    nodoVenta * max = lista_vent;
+    nodoVenta * aux = lista_vent; // buscara el articulo que tenga 'cuenta_vtas' mas elevada.
+
+    while (aux->sig != NULL )
+    {
+        if (max->datosVenta.uni_vend < aux->sig->datosVenta.uni_vend)
+        {
+            max = aux->sig;
+        }
+        aux = aux->sig;
+    }
+
+    max->sig = NULL;
+
+    printf ("\nEl articulo mas vendido es el siguiente:.\n");		// el que mas unidades haya vendido
+    printf ("%d - %s - %.2f euros.\n", max->datosVenta.datosArticulo.codigo, max->datosVenta.datosArticulo.descrip, max->datosVenta.datosArticulo.cuenta_vtas);
+}
+
+void vendedor_mas_productivo (nodoVendedor *lista_vend)		// acumula el importe de todas las ventas (cuenta_vtas), no por vendedor
+{
+    if (lista_vend == NULL)
+    {
+        printf ("\nNo existen ventas para mostrar.\n");
+        return;
+    }
+
+    nodoVendedor * max = lista_vend;
+    nodoVendedor * aux = lista_vend; // buscara el vendedor que tenga 'cuenta_vtas' mas elevada.
+
+    while (aux->sig != NULL )
+    {
+        if (max->datosVendedor.cuenta_vtas < aux->sig->datosVendedor.cuenta_vtas)
+        {
+            max = aux->sig;
+        }
+        aux = aux->sig;
+    }
+
+    max->sig = NULL;
+
+    printf ("\nEl vendedor mas productivo es el siguiente:.\n");
+    printf ("%s - %s - %.2f euros.\n", max->datosVendedor.nif, max->datosVendedor.nombre, max->datosVendedor.cuenta_vtas);
 }
 
 void tratar_opcion (nodoVenta **lista_vent, nodoArticulo **lista_art, nodoVendedor **lista_vend, int op)
@@ -398,13 +517,13 @@ void tratar_opcion (nodoVenta **lista_vent, nodoArticulo **lista_art, nodoVended
             break;
         case 5: alta_ventas(lista_vent, lista_art, lista_vend);
             break;
-        case 6: consulta_ventas_vendedor(*lista_vent);
+        case 6: consulta_ventas_vendedor(*lista_vent, *lista_vend);
             break;
-            /*case 7: consulta_ventas_articulo();
-                    break;
-            case 8: articulo_mas_vendido();
-                    break;
-            case 9: vendedor_mas_productivo();*/
+        case 7: consulta_ventas_articulo(*lista_vent, *lista_art);
+            break;
+        case 8: articulo_mas_vendido(*lista_vent, *lista_art);
+            break;
+        case 9: vendedor_mas_productivo(*lista_vend);
     }
 }
 
