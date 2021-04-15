@@ -21,10 +21,8 @@ typedef struct {
 typedef struct {
     int codigo;
     char descrip[CAR];
-    //////////////// PUNTO_8
     float cuenta_vtas; // aniado esta variable para la opcion 8.
     int unidades_vtas;
-    //////////////// PUNTO_8
 } Articulo;
 
 typedef struct nodo_a {
@@ -180,7 +178,6 @@ void pedir_nombre(char nombre[]) {
 }
 
 void insertar_vendedor_en_lista(nodoVendedor **lista_vend, nodoVendedor *aux) {
-
     if (*lista_vend == NULL)
         *lista_vend = aux;
     else {
@@ -209,26 +206,26 @@ void alta_vendedores(nodoVendedor **lista_vend) {
     pedir_nombre(aux->datosVendedor.nombre);
     aux->datosVendedor.cuenta_vtas = 0;
 
+    aux->sig = NULL;
+
     insertar_vendedor_en_lista(lista_vend, aux);
 }
 
-int buscar_nif(nodoVendedor *lista_vend, nodoVendedor **aux_vend) {
+int buscar_nif(nodoVendedor *lista_vend, char aux_nif[]) {
     while (lista_vend != NULL) {
-        if (strcmp(lista_vend->datosVendedor.nif, (*aux_vend)->datosVendedor.nif) == 0) {
-            strcpy((*aux_vend)->datosVendedor.nombre, lista_vend->datosVendedor.nombre);
+        if (strcmp(lista_vend->datosVendedor.nif, aux_nif) == 0)
             return 1;
-        } else
+        else
             lista_vend = lista_vend->sig;
     }
     return 0;
 }
 
-int buscar_cod(nodoArticulo *lista_art, nodoArticulo **aux_art) {
+int buscar_cod(nodoArticulo *lista_art, int cod) {
     while (lista_art != NULL) {
-        if (lista_art->datosArticulo.codigo == (*aux_art)->datosArticulo.codigo) {
-            strcpy((*aux_art)->datosArticulo.descrip, lista_art->datosArticulo.descrip);
+        if (lista_art->datosArticulo.codigo == cod)
             return 1;
-        }else
+        else
             lista_art = lista_art->sig;
     }
     return 0;
@@ -299,13 +296,11 @@ void incrementar_venta_articulo(nodoVenta *aux, nodoArticulo **lista_art) {
             aux_art->datosArticulo.cuenta_vtas = aux_art->datosArticulo.cuenta_vtas +
                                                  (aux->datosVenta.precio * aux->datosVenta.uni_vend);
             aux_art->datosArticulo.unidades_vtas = aux_art->datosArticulo.unidades_vtas +
-                                                 aux->datosVenta.uni_vend;
+                                                   aux->datosVenta.uni_vend;
             return;    // ??
         } else
             aux_art = aux_art->sig;
     }
-
-    ////   MAS CÓDIGO
 }
 
 void alta_ventas(nodoVenta **lista_vent, nodoArticulo **lista_art, nodoVendedor **lista_vend) {
@@ -315,28 +310,18 @@ void alta_ventas(nodoVenta **lista_vent, nodoArticulo **lista_art, nodoVendedor 
     pedir_nif(aux_nif);
     pedir_codigo(&cod);
 
-    nodoArticulo *aux_art;
-    aux_art = (nodoArticulo *) malloc(sizeof(nodoArticulo));
-    aux_art->datosArticulo.codigo = cod;
-
-    nodoVendedor *aux_vend;
-    aux_vend = (nodoVendedor *) malloc(sizeof(nodoVendedor));
-    strcpy(aux_vend->datosVendedor.nif,aux_nif);
-
-
-    if (buscar_nif(*lista_vend, &aux_vend) && (buscar_cod(*lista_art, &aux_art))) {
+    if (buscar_nif(*lista_vend, aux_nif) && (buscar_cod(*lista_art, cod))) {
         nodoVenta *aux;
 
         aux = (nodoVenta *) malloc(sizeof(nodoVenta));
 
-
         strcpy(aux->datosVenta.datosVendedor.nif, aux_nif);
-        strcpy(aux->datosVenta.datosVendedor.nombre, aux_vend->datosVendedor.nombre);
+        strcpy(aux->datosVenta.datosVendedor.nombre, (*lista_vend)->datosVendedor.nombre);
 
         pedir_fecha_venta(&(aux->datosVenta.fechaVenta.dia), &(aux->datosVenta.fechaVenta.mes),
                           &(aux->datosVenta.fechaVenta.anio));
         aux->datosVenta.datosArticulo.codigo = cod;
-        strcpy(aux->datosVenta.datosArticulo.descrip, aux_art->datosArticulo.descrip);
+        strcpy(aux->datosVenta.datosArticulo.descrip, (*lista_art)->datosArticulo.descrip);
         pedir_unidades(&(aux->datosVenta.uni_vend));
         pedir_precio(&(aux->datosVenta.precio));
 
