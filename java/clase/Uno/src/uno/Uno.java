@@ -12,7 +12,8 @@ import uno.librerias.PedirNombre;
 /**
  *
  * @author rafola
- */
+ */package problemacuenta;
+
 public class Uno {
 
     /**
