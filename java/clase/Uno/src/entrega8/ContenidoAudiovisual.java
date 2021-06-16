@@ -86,25 +86,25 @@ public class ContenidoAudiovisual implements IContenidoAudiovisual, Serializable
         }   
     }
 
-    public static String pedirNombre() {
+    public String pedirNombre() {
 
-        System.out.println("Introduzca el titulo: ");
+        System.out.println("Introduzca el titulo [" + getNombre() + "]:");
         return Leer.dato();
     }
 
-    public static int pedirAnio() {
+    public int pedirAnio() {
 
         System.out.println("Introduzca el año de estreno: ");
         return Leer.datoInt();
     }
 
-    public static String pedirGenero() {
+    public String pedirGenero() {
 
         System.out.println("Introduzca el genero: ");
         return Leer.dato();
     }
 
-    public static String pedirDirector() {
+    public String pedirDirector() {
 
         System.out.println("Introduzca el director: ");
         return Leer.dato();
@@ -116,13 +116,13 @@ public class ContenidoAudiovisual implements IContenidoAudiovisual, Serializable
         return Leer.datoInt();
     }
     
-    public static int pedirNumTemporadas() {
+    public int pedirNumTemporadas() {
 
         System.out.println("Introduzca la cantidad de temporadas: ");
         return Leer.datoInt();
     }
     
-    public static int pedirCapPorTemporada(int i) {
+    public int pedirCapPorTemporada(int i) {
 
         i = i + 1;
         System.out.println("\tTemporada " + i + ":");
@@ -196,7 +196,8 @@ public class ContenidoAudiovisual implements IContenidoAudiovisual, Serializable
     }
 
     public void setNombre(String nom) {
-        nombre = nom;
+        if(!"".equals(nom))
+            nombre = nom;
     }
 
     public void setAnio(int aaaa) {

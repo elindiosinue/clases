@@ -163,28 +163,19 @@ public class Tienda {
     }
 
     public void borrarContenidoDisponible(int op) {
-
-        Iterator<ContenidoAudiovisual> it = contenido.iterator();
-
-        ContenidoAudiovisual obj = new ContenidoAudiovisual();
         
-        while (it.hasNext()) {
-            obj = it.next();
-
-            if (obj.getId() == op) {
-                contenido.remove(obj);
-                break;
-            }
-        }
+        ContenidoAudiovisual aux;
+        aux = contenido.get(op - 1);
+        contenido.remove(op - 1);         // lo introducimos en el mismo sitio donde "estaba".
+        System.out.println("Se ha borrado.");
     }
 
     public void realizarDevolucion(int op) {
 
-        ContenidoAudiovisual aux = new ContenidoAudiovisual();
+        ContenidoAudiovisual aux;
         aux = contenido.get(op - 1);
-        contenido.remove(op - 1);
         aux.setEstaAlquilado(false);     // el contenido ahora estará disponible
-        contenido.add(op - 1, aux);         // lo introducimos en el mismo sitio donde "estaba".
+        contenido.set(op - 1, aux);         // lo introducimos en el mismo sitio donde "estaba".
         System.out.println("Se ha devuelto un elemento.");
     }
 
