@@ -9,10 +9,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import uno.librerias.PedirNombre;
 
-/**
- *
- * @author rafola
- */package problemacuenta;
 
 public class Uno {
 
