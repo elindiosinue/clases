@@ -22,17 +22,17 @@ public class GestionFicheros {
                 ContenidoAudiovisual.setUltimoId(4);
                 //tienda.rellenarContenido();
             }else{
-                FileInputStream foe = new FileInputStream(file);
-                ObjectInputStream entrada = new ObjectInputStream(foe);
-                tienda.contenido = (ArrayList<ContenidoAudiovisual>) entrada.readObject();    // si pongo ca1 tampoco imprime
-                Iterator<ContenidoAudiovisual> it = (Iterator<ContenidoAudiovisual>) tienda.contenido.iterator();
-                while (it.hasNext()) {
-                    ContenidoAudiovisual ca = it.next();
-                    if(ContenidoAudiovisual.getUltimoId() < ca.getId())
-                        ContenidoAudiovisual.setUltimoId(ca.getId()+1);
+                try (FileInputStream foe = new FileInputStream(file)) {
+                    ObjectInputStream entrada = new ObjectInputStream(foe);
+                    tienda.contenido = (ArrayList<ContenidoAudiovisual>) entrada.readObject();    // si pongo ca1 tampoco imprime
+                    Iterator<ContenidoAudiovisual> it = (Iterator<ContenidoAudiovisual>) tienda.contenido.iterator();
+                    while (it.hasNext()) {
+                        ContenidoAudiovisual ca = it.next();
+                        if(ContenidoAudiovisual.getUltimoId() < ca.getId())
+                            ContenidoAudiovisual.setUltimoId(ca.getId()+1);
+                    }
+                    entrada.close();
                 }
-                entrada.close();
-                foe.close();
             }
         }
         catch(IOException e){
