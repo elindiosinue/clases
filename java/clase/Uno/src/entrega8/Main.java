@@ -12,11 +12,13 @@ public class Main {
 
         GestionFicheros.leerDatosFichero(tienda); // esto está bien??
         
-        int opcion, opcion2;
+        int opcion = 0, opcion2;
 
         do {
-            mostrarMenuPrincipal();
-            opcion = leerOpcion();
+            if(opcion != 1 && opcion != 2){
+                mostrarMenuPrincipal();
+                opcion = leerOpcion();
+            }
 
             if (opcion == 1) {
                 mostrarMenuUsuario();
@@ -27,7 +29,7 @@ public class Main {
                 opcion2 = leerOpcionAdministrador();
                 tratarOpcionAdministrador(opcion2, tienda);
             }
-        } while (opcion != SALIR);
+        } while (opcion2 != SALIR);
         
         GestionFicheros.escribirDatosFicheroPersistente(tienda);
     }

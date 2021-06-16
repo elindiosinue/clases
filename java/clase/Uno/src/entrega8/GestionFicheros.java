@@ -19,12 +19,18 @@ public class GestionFicheros {
                 tienda.contenido.add(ca2);
                 ContenidoAudiovisual ca3 = new ContenidoAudiovisual(3, "El padrino", 1972, "crimen", "Francis Ford Coppola", 545, 'p');
                 tienda.contenido.add(ca3);
+                ContenidoAudiovisual.setUltimoId(4);
                 //tienda.rellenarContenido();
             }else{
                 FileInputStream foe = new FileInputStream(file);
                 ObjectInputStream entrada = new ObjectInputStream(foe);
-                ArrayList<ContenidoAudiovisual> contenido = (ArrayList<ContenidoAudiovisual>) entrada.readObject();    // si pongo ca1 tampoco imprime
-                tienda.contenido = contenido;
+                tienda.contenido = (ArrayList<ContenidoAudiovisual>) entrada.readObject();    // si pongo ca1 tampoco imprime
+                Iterator<ContenidoAudiovisual> it = (Iterator<ContenidoAudiovisual>) tienda.contenido.iterator();
+                while (it.hasNext()) {
+                    ContenidoAudiovisual ca = it.next();
+                    if(ContenidoAudiovisual.getUltimoId() < ca.getId())
+                        ContenidoAudiovisual.setUltimoId(ca.getId()+1);
+                }
                 entrada.close();
                 foe.close();
             }

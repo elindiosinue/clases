@@ -37,6 +37,8 @@ public class ContenidoAudiovisual implements IContenidoAudiovisual, Serializable
         genero = gen;
         director = dir;
         duracion = dur;
+        if(ultimoId < cod)
+            ultimoId = cod;
     }
     
     // constructor para cargar datos de series directamente del fichero binario
@@ -52,6 +54,8 @@ public class ContenidoAudiovisual implements IContenidoAudiovisual, Serializable
         for(int i = 0; i < temp; i++)
             arr[i] = caps;
         capPorTemporada = arr;
+        if(ultimoId < cod)
+            ultimoId = cod;
     }
     
     public void confirmarAlquiler() {
@@ -225,5 +229,13 @@ public class ContenidoAudiovisual implements IContenidoAudiovisual, Serializable
 
     public void setEstaAlquilado(boolean estaAlquilado) {
         this.estaAlquilado = estaAlquilado;
+    }
+
+    public static int getUltimoId() {
+        return ultimoId;
+    }
+
+    public static void setUltimoId(int ultimoId) {
+        ContenidoAudiovisual.ultimoId = ultimoId;
     }
 }
