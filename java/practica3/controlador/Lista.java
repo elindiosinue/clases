@@ -31,12 +31,11 @@ public class Lista {
             ultimo = nuevo;
             move = nuevo;                     // y ponemos a move apuntando también a la primera posición
         }
-        else {     
-            ultimo.getSiguiente();
+        else {
+            Nodo ultimoAux = ultimo;
+            nuevo.setAnterior(ultimoAux);
+            ultimoAux.setSiguiente(nuevo);
             ultimo = nuevo;
-            nuevo.getAnterior();
-            nuevo = ultimo;
-            ultimo = ultimo.getSiguiente();
         }      
     }
     
